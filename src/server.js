@@ -2,6 +2,7 @@ import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
 import { getEnvVar } from './utils/getEnvVar.js';
+import { getAllReviews, getReviewById } from './services/review-services.js';
 
 const PORT = Number(getEnvVar('PORT', '3000'));
 
@@ -25,9 +26,26 @@ export const startServer = () => {
 
   app.use(express.json());
 
-  app.get('/', (req, res) => {
-    res.json({
-      message: 'Hello word!',
+  app.get('/review', async (req, res) => {
+    const reviews = await getAllReviews();
+
+    res.status(200).json({
+      data: reviews,
+    });
+  });
+  app.get('/review/:reviewId', async (req, res, next) => {
+    const { reviewId } = req.params;
+
+    const review = await getReviewById(reviewId);
+
+    if (!review) {
+      res.status(404).json({
+        message: 'Review not found!',
+      });
+      return;
+    }
+    res.status(200).json({
+      data: review,
     });
   });
 
