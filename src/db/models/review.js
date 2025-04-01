@@ -15,4 +15,4 @@ const reviewSchema = new Schema({
   },
 });
 
-export const reviewCollection = model('reviews', reviewSchema);
+export const ReviewCollection = model('reviews', reviewSchema);
