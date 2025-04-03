@@ -1,8 +1,23 @@
 import { ReviewCollection } from '../db/models/review.js';
+import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
-export const getAllReviews = async () => {
-  const reviews = await ReviewCollection.find();
-  return reviews;
+export const getAllReviews = async ({ page, perPage }) => {
+  const limit = perPage;
+  const skip = (page - 1) * perPage;
+
+  const reviewsQuery = ReviewCollection.find();
+  const reviewsCount = await ReviewCollection.find()
+    .merge(reviewsQuery)
+    .countDocuments();
+
+  const reviews = await reviewsQuery.skip(skip).limit(limit).exec();
+
+  const paginationData = calculatePaginationData(reviewsCount, perPage, page);
+
+  return {
+    data: reviews,
+    ...paginationData,
+  };
 };
 
 export const getReviewById = async (reviewId) => {
@@ -21,16 +36,15 @@ export const deleteReview = async (reviewId) => {
 };
 
 export const updateReview = async (reviewId, payload, options = {}) => {
-  const rewResult = await ReviewCollection.findByIdAndUpdate(
-    { _id: reviewId },
-    payload,
-    { new: true, includeResultMetadata: true, ...options },
-  );
+  const review = await ReviewCollection.findByIdAndUpdate(reviewId, payload, {
+    new: true,
+    ...options,
+  });
 
-  if (!rewResult || !rewResult.value) return null;
+  if (!review) return null;
 
   return {
-    review: rewResult.value,
-    isNew: Boolean(rewResult?.lastErrorObject?.upserted),
+    review,
+    isNew: false, // бо findByIdAndUpdate не створює новий документ (без upsert)
   };
 };

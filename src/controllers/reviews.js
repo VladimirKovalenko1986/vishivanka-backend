@@ -5,12 +5,19 @@ import {
   deleteReview,
   updateReview,
 } from '../services/review-services.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import createHttpError from 'http-errors';
 
 export const getReviewsControllers = async (req, res, next) => {
-  const reviews = await getAllReviews();
+  const { page, perPage } = parsePaginationParams(req.query);
+  const reviews = await getAllReviews({
+    page,
+    perPage,
+  });
 
-  res.status(200).json({
+  res.json({
+    status: 200,
+    message: 'Successfully found reviews',
     data: reviews,
   });
 };
@@ -31,12 +38,12 @@ export const getReviewByIdControllers = async (req, res, next) => {
   });
 };
 
-export const createReviewControllesr = async (req, res) => {
+export const createReviewController = async (req, res) => {
   const review = await createReview(req.body);
 
   res.status(201).json({
     status: 201,
-    message: 'Succsessfully create review',
+    message: 'Successfully created review',
     data: review,
   });
 };
@@ -50,7 +57,10 @@ export const deleteReviewControllers = async (req, res, next) => {
     return next(createHttpError(404, 'Review not found'));
   }
 
-  res.status(204).send();
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully deleted review',
+  });
 };
 
 export const patchReviewController = async (req, res, next) => {

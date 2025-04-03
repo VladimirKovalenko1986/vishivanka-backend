@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   getReviewsControllers,
   getReviewByIdControllers,
-  createReviewControllesr,
+  createReviewController,
   deleteReviewControllers,
   patchReviewController,
 } from '../controllers/reviews.js';
@@ -21,7 +21,7 @@ router.get(
   ctrlWrapper(getReviewByIdControllers),
 );
 
-router.post('/review', ctrlWrapper(createReviewControllesr));
+router.post('/review', ctrlWrapper(createReviewController));
 
 router.delete(
   '/review/:reviewId',
