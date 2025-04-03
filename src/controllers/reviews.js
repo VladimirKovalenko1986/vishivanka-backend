@@ -6,13 +6,17 @@ import {
   updateReview,
 } from '../services/review-services.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
 import createHttpError from 'http-errors';
 
-export const getReviewsControllers = async (req, res, next) => {
+export const getReviewsControllers = async (req, res) => {
+  const { sortBy, sortOrder } = parseSortParams(req.query);
   const { page, perPage } = parsePaginationParams(req.query);
   const reviews = await getAllReviews({
     page,
     perPage,
+    sortBy,
+    sortOrder,
   });
 
   res.json({
