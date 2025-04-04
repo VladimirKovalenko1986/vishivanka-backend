@@ -7,20 +7,28 @@ export const getAllReviews = async ({
   perPage = 10,
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
+  filter = {},
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const reviewsQuery = ReviewCollection.find();
-  const reviewsCount = await ReviewCollection.find()
-    .merge(reviewsQuery)
-    .countDocuments();
+  const reviewsQuery = ReviewCollection.find(filter);
+  //   const reviewsCount = await ReviewCollection.find(filter).countDocuments();
 
-  const reviews = await reviewsQuery
-    .skip(skip)
-    .limit(limit)
-    .sort({ [sortBy]: sortOrder })
-    .exec();
+  //   const reviews = await reviewsQuery
+  //     .skip(skip)
+  //     .limit(limit)
+  //     .sort({ [sortBy]: sortOrder })
+  //     .exec();
+
+  const [reviewsCount, reviews] = await Promise.all([
+    ReviewCollection.find(filter).countDocuments(),
+    reviewsQuery
+      .skip(skip)
+      .limit(limit)
+      .sort({ [sortBy]: sortOrder })
+      .exec(),
+  ]);
 
   const paginationData = calculatePaginationData(reviewsCount, perPage, page);
 

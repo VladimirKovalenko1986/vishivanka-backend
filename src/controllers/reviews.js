@@ -8,15 +8,19 @@ import {
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import createHttpError from 'http-errors';
+import { parceFilterParams } from '../utils/parceFilterParams.js';
 
 export const getReviewsControllers = async (req, res) => {
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const { page, perPage } = parsePaginationParams(req.query);
+  const filter = parceFilterParams(req.query);
+
   const reviews = await getAllReviews({
     page,
     perPage,
     sortBy,
     sortOrder,
+    filter,
   });
 
   res.json({
