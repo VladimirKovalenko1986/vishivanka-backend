@@ -1,0 +1,8 @@
+[
+  {
+    "text": "Тестова назва",
+    "textPrice": "300 грн",
+    "url": "https://res.cloudinary.com/demo/image/upload/sample.jpg",
+    "url2x": "https://res.cloudinary.com/demo/image/upload/sample@2x.jpg"
+  }
+]

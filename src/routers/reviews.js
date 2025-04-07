@@ -13,24 +13,16 @@ import { isValidId } from '../middlewares/isValidId.js';
 
 const router = Router();
 
-router.get('/review', ctrlWrapper(getReviewsControllers));
+router.get('/', ctrlWrapper(getReviewsControllers));
 
-router.get(
-  '/review/:reviewId',
-  isValidId,
-  ctrlWrapper(getReviewByIdControllers),
-);
+router.get('/:reviewId', isValidId, ctrlWrapper(getReviewByIdControllers));
 
-router.post('/review', ctrlWrapper(createReviewController));
+router.post('/', ctrlWrapper(createReviewController));
 
-router.delete(
-  '/review/:reviewId',
-  isValidId,
-  ctrlWrapper(deleteReviewControllers),
-);
+router.delete('/:reviewId', isValidId, ctrlWrapper(deleteReviewControllers));
 
 router.patch(
-  '/review/:reviewId',
+  '/:reviewId',
   isValidId,
   validateBody(createReviewSchema),
   ctrlWrapper(patchReviewController),
