@@ -13,6 +13,9 @@ const reviewSchema = new Schema({
     type: String,
     require: true,
   },
+  photo: {
+    type: String,
+  },
 });
 
 export const ReviewCollection = model('reviews', reviewSchema);

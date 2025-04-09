@@ -9,6 +9,7 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import createHttpError from 'http-errors';
 import { parceFilterParams } from '../utils/parceFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 export const getReviewsControllers = async (req, res) => {
   const { sortBy, sortOrder } = parseSortParams(req.query);
@@ -47,7 +48,14 @@ export const getReviewByIdControllers = async (req, res, next) => {
 };
 
 export const createReviewController = async (req, res) => {
-  const review = await createReview(req.body);
+  const photo = req.file;
+
+  let photoUrl;
+  if (photo) {
+    photoUrl = await await saveFileToUploadDir(photo);
+  }
+
+  const review = await createReview({ ...req.body, photo: photoUrl });
 
   res.status(201).json({
     status: 201,
@@ -73,8 +81,13 @@ export const deleteReviewControllers = async (req, res, next) => {
 
 export const patchReviewController = async (req, res, next) => {
   const { reviewId } = req.params;
+  const photo = req.file;
 
-  const result = await updateReview(reviewId, req.body);
+  let photoUrl;
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+  const result = await updateReview(reviewId, { ...req.body, photo: photoUrl });
 
   if (!result) {
     return next(createHttpError(404, 'Review not found'));
