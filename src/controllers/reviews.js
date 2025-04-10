@@ -10,6 +10,8 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 import createHttpError from 'http-errors';
 import { parceFilterParams } from '../utils/parceFilterParams.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
 
 export const getReviewsControllers = async (req, res) => {
   const { sortBy, sortOrder } = parseSortParams(req.query);
@@ -52,7 +54,11 @@ export const createReviewController = async (req, res) => {
 
   let photoUrl;
   if (photo) {
-    photoUrl = await await saveFileToUploadDir(photo);
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
   }
 
   const review = await createReview({ ...req.body, photo: photoUrl });
@@ -85,7 +91,11 @@ export const patchReviewController = async (req, res, next) => {
 
   let photoUrl;
   if (photo) {
-    photoUrl = await saveFileToUploadDir(photo);
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
   }
   const result = await updateReview(reviewId, { ...req.body, photo: photoUrl });
 

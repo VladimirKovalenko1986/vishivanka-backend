@@ -10,3 +10,9 @@ export const SORT_ORDER = {
 export const TEMP_UPLOAD_DIR = path.join(process.cwd(), 'temp');
 
 export const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
+
+export const CLOUDINARY = {
+  CLOUDINARY_NAME: 'CLOUDINARY_NAME',
+  CLOUDINARY_KEY: 'CLOUDINARY_KEY',
+  CLOUDINARY_SECRET: 'CLOUDINARY_SECRET',
+};
